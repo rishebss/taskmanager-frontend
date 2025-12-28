@@ -146,7 +146,7 @@ const Navbar = () => {
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <a
-                        href="https://github.com/rishebss/nesa-todo-frontend"
+                        href="https://github.com/rishebss/taskmanager-frontend"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-3 p-3 rounded-2xl focus:bg-white/5"
@@ -180,7 +180,7 @@ const Navbar = () => {
                     </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                       <a
-                        href="https://github.com/rishebss/nesa-todo-frontend"
+                        href="https://github.com/rishebss/taskmanager-frontend"
                         target="_blank"
                         rel="noopener noreferrer"
                         className="flex items-center gap-3 p-3 rounded-2xl focus:bg-white/5"
