@@ -98,7 +98,7 @@ const Hero = () => {
 
             {/* Description */}
             <p className="text-lg md:text-xl text-gray-400 mb-8 max-w-2xl">
-              A minimal, powerful todo app with deadlines, real-time tracking, and smart organization.
+              A powerful todo app with deadlines, real-time tracking, and smart organization.
               Built for developers who value simplicity and performance.
             </p>
 
@@ -133,7 +133,7 @@ const Hero = () => {
                     {isDropdownOpen && (
                       <div className="absolute top-full mt-2 w-full sm:w-48 bg-gray-900 border border-gray-700 rounded-lg shadow-xl z-50 overflow-hidden">
                         <a
-                          href="https://github.com/rishebss/nesa-todo-frontend"
+                          href="https://github.com/rishebss/taskmanager-frontend"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors duration-150"
@@ -144,7 +144,7 @@ const Hero = () => {
                         </a>
                         <div className="h-px bg-gray-800"></div>
                         <a
-                          href="https://github.com/rishebss/nesa-todo-backend"
+                          href="https://github.com/rishebss/taskmanager-backend"
                           target="_blank"
                           rel="noopener noreferrer"
                           className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors duration-150"

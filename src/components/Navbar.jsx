@@ -61,7 +61,7 @@ const Navbar = () => {
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center gap-4">
             <a
-              href="https://github.com/rishebss/nesa-todo-frontend"
+              href="https://github.com/rishebss/taskmanager-frontend"
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 text-gray-400 hover:text-white transition-colors"
