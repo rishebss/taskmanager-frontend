@@ -18,14 +18,14 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { 
-  Edit2, 
-  Trash2, 
-  Save, 
-  FileText, 
-  Tag, 
-  User, 
-  Calendar, 
+import {
+  Edit2,
+  Trash2,
+  Save,
+  FileText,
+  Tag,
+  User,
+  Calendar,
   AlertTriangle,
   Square,
   ArrowUpRight,
@@ -52,7 +52,7 @@ const TodoViewEditModal = ({
   if (!todo) return null;
 
   const getStatusIcon = (status) => {
-    switch(status) {
+    switch (status) {
       case 'completed': return <CheckSquare className="h-4 w-4" />;
       case 'in-progress': return <ArrowUpRight className="h-4 w-4" />;
       default: return <Square className="h-4 w-4" />;
@@ -68,8 +68,8 @@ const TodoViewEditModal = ({
         </Badge>
       );
     }
-    
-    switch(status) {
+
+    switch (status) {
       case 'completed':
         return <Badge variant="success" className="gap-1"><CheckCircle className="h-3 w-3" /> Completed</Badge>;
       case 'in-progress':
@@ -80,7 +80,10 @@ const TodoViewEditModal = ({
   };
 
   const formatDate = (dateString) => {
-    return new Date(dateString).toLocaleDateString('en-US', {
+    if (!dateString) return 'No deadline';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return 'Invalid date';
+    return date.toLocaleDateString('en-US', {
       weekday: 'short',
       month: 'short',
       day: 'numeric',
@@ -89,13 +92,31 @@ const TodoViewEditModal = ({
   };
 
   const formatTime = (dateString) => {
-    return new Date(dateString).toLocaleTimeString('en-US', {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '';
+    return date.toLocaleTimeString('en-US', {
       hour: '2-digit',
       minute: '2-digit'
     });
   };
 
+  const formatForDateTimeLocal = (dateString) => {
+    if (!dateString) return '';
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return '';
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
   const isOverdue = (deadline) => {
+    if (!deadline) return false;
     return new Date(deadline) < new Date();
   };
 
@@ -115,7 +136,7 @@ const TodoViewEditModal = ({
             {isEditing ? 'Update the task details below' : 'View and manage your task'}
           </DialogDescription>
         </DialogHeader>
-        
+
         <div className="space-y-6 py-4">
           {/* Title */}
           <div>
@@ -168,8 +189,8 @@ const TodoViewEditModal = ({
                 Status
               </label>
               {isEditing ? (
-                <Select 
-                  value={editFormData.status} 
+                <Select
+                  value={editFormData.status}
                   onValueChange={(value) => onEditFormChange('status', value)}
                   disabled={loading}
                 >
@@ -198,18 +219,16 @@ const TodoViewEditModal = ({
                   </SelectContent>
                 </Select>
               ) : (
-                <div className={`p-3 rounded-lg border ${
-                  todo.status === 'completed' ? 'bg-green-900/20 border-green-700/30' :
-                  todo.status === 'in-progress' ? 'bg-blue-900/20 border-blue-700/30' :
-                  'bg-yellow-900/20 border-yellow-700/30'
-                }`}>
+                <div className={`p-3 rounded-lg border ${todo.status === 'completed' ? 'bg-green-900/20 border-green-700/30' :
+                    todo.status === 'in-progress' ? 'bg-blue-900/20 border-blue-700/30' :
+                      'bg-yellow-900/20 border-yellow-700/30'
+                  }`}>
                   <div className="flex items-center gap-2">
                     {getStatusIcon(todo.status)}
-                    <span className={`font-medium ${
-                      todo.status === 'completed' ? 'text-green-400' :
-                      todo.status === 'in-progress' ? 'text-blue-400' :
-                      'text-yellow-400'
-                    }`}>
+                    <span className={`font-medium ${todo.status === 'completed' ? 'text-green-400' :
+                        todo.status === 'in-progress' ? 'text-blue-400' :
+                          'text-yellow-400'
+                      }`}>
                       {todo.status.charAt(0).toUpperCase() + todo.status.slice(1)}
                     </span>
                   </div>
@@ -229,20 +248,18 @@ const TodoViewEditModal = ({
               {isEditing ? (
                 <Input
                   type="datetime-local"
-                  value={editFormData.deadline}
+                  value={formatForDateTimeLocal(editFormData.deadline)}
                   onChange={(e) => onEditFormChange('deadline', e.target.value)}
                   className="bg-gray-800/50 border-gray-700 text-white"
                   disabled={loading}
                 />
               ) : (
-                <div className={`p-3 rounded-lg border ${
-                  overdue 
-                    ? 'bg-red-900/20 border-red-700/30' 
+                <div className={`p-3 rounded-lg border ${overdue
+                    ? 'bg-red-900/20 border-red-700/30'
                     : 'bg-gray-800/30 border-gray-700'
-                }`}>
-                  <p className={`font-medium ${
-                    overdue ? 'text-red-400' : 'text-gray-100'
                   }`}>
+                  <p className={`font-medium ${overdue ? 'text-red-400' : 'text-gray-100'
+                    }`}>
                     {formatDate(todo.deadline)} at {formatTime(todo.deadline)}
                   </p>
                   {overdue && (
@@ -256,11 +273,11 @@ const TodoViewEditModal = ({
             </div>
           </div>
 
-          
 
-    
+
+
         </div>
-        
+
         {/* Dialog Footer */}
         <DialogFooter className="gap-3 pt-4 border-t border-gray-800">
           {isEditing ? (

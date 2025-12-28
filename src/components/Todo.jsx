@@ -39,7 +39,7 @@ const Todo = () => {
   // for pagination tracking
   const [pagination, setPagination] = useState({
     page: 1,
-    limit: 8,  
+    limit: 8,
     total: 0,
     totalPages: 1
   });
@@ -79,13 +79,13 @@ const Todo = () => {
     setLoading(true);
     try {
       const { page, limit } = pagination;
-      
+
       // Log what we're sending to backend
       console.log(`Frontend: Requesting page=${page}, limit=${limit}, status=${filters.status}`);
-      
+
       // Send pagination parameters to backend
-      const response = await todoApi.getTodos({ 
-        page, 
+      const response = await todoApi.getTodos({
+        page,
         limit,  // This tells backend how many items per page
         status: filters.status,
         search: filters.search
@@ -110,7 +110,7 @@ const Todo = () => {
         // Keep frontend's limit setting
         limit: prev.limit
       }));
-      
+
     } catch (error) {
       toast.error('Failed to load todos');
       console.error('Load todos error:', error);
@@ -124,12 +124,12 @@ const Todo = () => {
   useEffect(() => {
     loadTodos();
   }, [pagination.page, filters.status, filters.search]);
-  
+
   // Update search input when filters.search changes
   useEffect(() => {
     setSearchInput(filters.search);
   }, [filters.search]);
-  
+
   // Cleanup timeout on component unmount
   useEffect(() => {
     return () => {
@@ -303,13 +303,28 @@ const Todo = () => {
     }
   };
 
+  // Helper to format date for datetime-local input
+  const formatForDateTimeLocal = (dateValue) => {
+    if (!dateValue) return '';
+    const date = new Date(dateValue);
+    if (isNaN(date.getTime())) return '';
+
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+  };
+
   // Handle view
   const handleView = (todo) => {
     setSelectedTodo(todo);
     setEditFormData({
       title: todo.title,
       description: todo.description,
-      deadline: todo.deadline.split('T')[0] + 'T' + todo.deadline.split('T')[1].substring(0, 5),
+      deadline: formatForDateTimeLocal(todo.deadline),
       status: todo.status
     });
     setIsEditing(false);
@@ -323,7 +338,7 @@ const Todo = () => {
       setEditFormData({
         title: selectedTodo.title,
         description: selectedTodo.description,
-        deadline: selectedTodo.deadline.split('T')[0] + 'T' + selectedTodo.deadline.split('T')[1].substring(0, 5),
+        deadline: formatForDateTimeLocal(selectedTodo.deadline),
         status: selectedTodo.status
       });
     }
@@ -368,12 +383,12 @@ const Todo = () => {
             onChange={(e) => {
               const value = e.target.value;
               setSearchInput(value);
-              
+
               // Clear the previous timeout
               if (searchTimeoutRef.current) {
                 clearTimeout(searchTimeoutRef.current);
               }
-              
+
               // Set a new timeout to update the filters after 500ms of inactivity
               searchTimeoutRef.current = setTimeout(() => {
                 setFilters(prev => ({ ...prev, search: value }));
@@ -384,7 +399,7 @@ const Todo = () => {
             className="w-full sm:w-64 bg-gray-900/40 backdrop-blur-md border border-gray-700/50 text-white placeholder:text-gray-500"
           />
         </div>
-        
+
         <div className="relative">
           <button
             onClick={() => setIsFilterOpen(!isFilterOpen)}
@@ -392,15 +407,15 @@ const Todo = () => {
           >
             <Filter className="h-4 w-4" />
             <span className="text-sm font-medium hidden sm:block">
-              {filters.status === '' ? 'All' : 
-               filters.status === 'pending' ? 'Pending' : 
-               filters.status === 'in-progress' ? 'In Progress' : 
-               'Completed'}
+              {filters.status === '' ? 'All' :
+                filters.status === 'pending' ? 'Pending' :
+                  filters.status === 'in-progress' ? 'In Progress' :
+                    'Completed'}
             </span>
-            
+
             <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isFilterOpen ? 'rotate-180' : ''}`} />
           </button>
-          
+
           {isFilterOpen && (
             <div className="absolute top-full right-0 mt-2 w-48 bg-gray-900/90 backdrop-blur-md border border-gray-700/50 rounded-xl shadow-xl z-10 overflow-hidden">
               {[

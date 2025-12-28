@@ -40,16 +40,16 @@ api.interceptors.response.use(
 export const authApi = {
   // Register
   register: (userData) => api.post('/auth/register', userData),
-  
+
   // Login
   login: (credentials) => api.post('/auth/login', credentials),
-  
+
   // Get profile
   getProfile: () => api.get('/auth/profile'),
-  
+
   // Update profile
   updateProfile: (userData) => api.put('/auth/profile', userData),
-  
+
   // Change password
   changePassword: (passwordData) => api.put('/auth/change-password', passwordData),
 };
@@ -59,20 +59,20 @@ export const todoApi = {
   // Get todos with pagination and filters
   getTodos: (params = {}) => {
     // Default parameters
-    const defaultParams = { 
-      page: 1, 
-      limit: 10, 
+    const defaultParams = {
+      page: 1,
+      limit: 10,
       status: '',
       sortBy: 'createdAt',
       order: 'desc'
     };
-    
+
     const queryParams = { ...defaultParams, ...params };
     // Remove empty status from params
     if (!queryParams.status) delete queryParams.status;
     // Remove empty search from params
     if (!queryParams.search) delete queryParams.search;
-    
+
     return api.get('/todos', { params: queryParams });
   },
 
@@ -93,12 +93,25 @@ export const todoApi = {
         console.warn('Could not parse deadline date:', e);
       }
     }
-    
+
     return api.post('/todos', todoData);
   },
 
   // Update todo
-  updateTodo: (id, todoData) => api.put(`/todos/${id}`, todoData),
+  updateTodo: (id, todoData) => {
+    // Ensure deadline is properly formatted if provided
+    if (todoData.deadline && typeof todoData.deadline === 'string') {
+      try {
+        const date = new Date(todoData.deadline);
+        if (!isNaN(date.getTime())) {
+          todoData.deadline = date.toISOString();
+        }
+      } catch (e) {
+        console.warn('Could not parse deadline date:', e);
+      }
+    }
+    return api.put(`/todos/${id}`, todoData);
+  },
 
   // Delete todo
   deleteTodo: (id) => {
@@ -108,7 +121,7 @@ export const todoApi = {
 
   // Get stats
   getStats: () => api.get('/todos/stats'),
-  
+
   // Test API connection
   testConnection: () => api.get('/'),
 };
