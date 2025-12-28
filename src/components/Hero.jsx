@@ -1,0 +1,255 @@
+import React, { useState, useEffect, useRef } from 'react';
+import { ArrowRight, Sparkles, Check, Zap, Calendar, ChevronDown, LogIn } from 'lucide-react';
+import { FaGithub } from "react-icons/fa";
+import { Link } from 'react-router-dom';
+import { useAuth } from '@/contexts/AuthContext';
+
+import { Button } from './ui/button';
+
+const Hero = () => {
+  const { user } = useAuth();
+  const [mounted, setMounted] = useState(false);
+  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const dropdownRef = useRef(null);
+
+  useEffect(() => {
+    document.documentElement.classList.add('dark');
+    setMounted(true);
+  }, []);
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event) => {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target)) {
+        setIsDropdownOpen(false);
+      }
+    };
+
+    document.addEventListener('mousedown', handleClickOutside);
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside);
+    };
+  }, []);
+
+  const scrollToTodoSection = () => {
+    const todoSection = document.getElementById('todo-section');
+    if (todoSection) {
+      todoSection.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+  const features = [
+    "Overdue alerts",
+    "User authentication",
+    "Server side pagination",
+    "Server side filter",
+    "RESTful API for CRUD",
+    "Mobile responsive design"
+  ];
+
+  const techStacks = [
+    {
+      name: "React",
+      description: "Frontend UI Library",
+      color: "from-cyan-500 to-blue-600",
+      svg: "/images/reactjs.svg",
+      size: "h-24 w-24"
+    },
+    {
+      name: "Express",
+      description: "Backend Framework",
+      color: "from-yellow-500 to-yellow-600",
+      svg: "/images/expressjs.svg",
+      size: "h-12 w-12"
+    },
+    {
+      name: "Firebase",
+      description: "NoSQL Database",
+      color: "from-orange-400 to-orange-700",
+      svg: "/images/firebase.svg",
+      size: "h-24 w-24"
+    },
+    {
+      name: "Tailwind",
+      description: "CSS Framework",
+      color: "from-sky-500 to-blue-400",
+      svg: "/images/tailwindcss2.svg",
+      size: "h-24 w-24"
+    }
+  ];
+
+  return (
+    <div className="min-h-screen text-white">
+      {/* Main Hero - Split Layout */}
+      <section className="relative container mx-auto px-2 py-6 pt-16 pb-16">
+        <div className="max-w-6xl mx-auto flex flex-col lg:flex-row items-center gap-16 mt-[70px]">
+
+          {/* Left Column - Text Content */}
+          <div className="flex-1">
+
+
+            {/* Headline */}
+            <h1 className="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+              <span className="block text-gray-300">React.js test assignment</span>
+              <span className="block bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent bg-[length:200%_auto] animate-gradient">
+
+              </span>
+            </h1>
+
+            {/* Description */}
+            <p className="text-lg md:text-xl text-gray-400 mb-8 max-w-2xl">
+              A minimal, powerful todo app with deadlines, real-time tracking, and smart organization.
+              Built for developers who value simplicity and performance.
+            </p>
+
+            {/* CTA Buttons */}
+            <div className="flex flex-col sm:flex-row gap-4 mb-12">
+              {user ? (
+                <>
+                  <Button
+                    size="lg"
+                    variant="outline"
+                    className="gap-3 border-gray-700 hover:bg-gray-800 text-white"
+                    onClick={scrollToTodoSection}
+                  >
+                    Get Started
+                    <ArrowRight className="h-5 w-5" />
+                  </Button>
+
+                  {/* GitHub Dropdown Button */}
+                  <div className="relative" ref={dropdownRef}>
+                    <Button
+                      size="lg"
+                      variant="outline"
+                      className="gap-3 border-gray-700 hover:bg-gray-800 w-full sm:w-auto"
+                      onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    >
+                      <FaGithub className="h-5 w-5" />
+                      GitHub
+                      <ChevronDown className={`h-4 w-4 transition-transform duration-200 ${isDropdownOpen ? 'rotate-180' : ''}`} />
+                    </Button>
+
+                    {/* Dropdown Menu */}
+                    {isDropdownOpen && (
+                      <div className="absolute top-full mt-2 w-full sm:w-48 bg-gray-900 border border-gray-700 rounded-lg shadow-xl z-50 overflow-hidden">
+                        <a
+                          href="https://github.com/rishebss/nesa-todo-frontend"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors duration-150"
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
+                          <div className="h-2 w-2 rounded-full bg-cyan-400"></div>
+                          <span>Frontend</span>
+                        </a>
+                        <div className="h-px bg-gray-800"></div>
+                        <a
+                          href="https://github.com/rishebss/nesa-todo-backend"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="flex items-center gap-3 px-4 py-3 text-gray-300 hover:bg-gray-800 hover:text-white transition-colors duration-150"
+                          onClick={() => setIsDropdownOpen(false)}
+                        >
+                          <div className="h-2 w-2 rounded-full bg-green-400"></div>
+                          <span>Backend</span>
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                </>
+              ) : (
+                <Link to="/login" className="w-[150px] sm:w-auto">
+                  <Button
+                    size="lg"
+                    className="w-full sm:w-40 gap-3 bg-transparent border border-gray-700 text-white rounded-lg"
+                  >
+                    <LogIn className="h-5 w-5" />
+                    Sign in
+                  </Button>
+                </Link>
+              )}
+            </div>
+
+            {/* Features Grid */}
+            <div className="mb-10">
+              <h3 className="text-xl font-semibold text-gray-300 mb-6">Everything You Need</h3>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                {features.map((feature, index) => (
+                  <div key={index} className="flex items-start gap-3">
+                    <Check className="h-5 w-5 text-green-400 mt-0.5 flex-shrink-0" />
+                    <span className="text-gray-400 text-sm">{feature}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column - Tech Stack Boxes */}
+          <div className="flex-1 lg:max-w-md">
+            <div className="sticky top-24">
+              <div className="mb-8">
+                <h3 className="text-2xl font-bold text-gray-300 mb-2">Tech Stack</h3>
+                <p className="text-gray-500 text-sm">Technologies powering this application</p>
+              </div>
+
+              <div className="grid grid-cols-2 gap-4">
+                {techStacks.map((tech, index) => (
+                  <div
+                    key={tech.name}
+                    className="group relative p-5 rounded-xl bg-gray-900/40 backdrop-blur-sm border border-gray-800 hover:border-gray-700 transition-all duration-300 hover:scale-[1.02] hover:shadow-lg"
+                  >
+                    {/* Gradient Background */}
+                    <div className={`absolute inset-0 rounded-xl bg-gradient-to-br ${tech.color} opacity-0 group-hover:opacity-10 transition-opacity duration-500`} />
+
+                    {/* SVG Image */}
+                    <div className="h-24 w-24 mb-[-20px] mt-[-20px] flex items-center justify-center">
+                      <img
+                        src={tech.svg}
+                        alt={`${tech.name} logo`}
+                        className={`${tech.size} object-contain filter brightness-0 invert opacity-90 group-hover:opacity-100 transition-opacity`}
+                      />
+                    </div>
+
+                    {/* Tech Name */}
+
+
+                    {/* Description */}
+                    <div className="text-sm text-gray-500">{tech.description}</div>
+
+                    {/* Glow effect on hover */}
+                    <div className={`absolute -inset-0.5 rounded-xl bg-gradient-to-br ${tech.color} opacity-0 blur group-hover:opacity-20 transition-opacity duration-500 -z-10`} />
+                  </div>
+                ))}
+              </div>
+
+              {/* Stack Connection Visualization */}
+              <div className="mt-8 p-5 rounded-xl bg-gray-900/30 border border-gray-800">
+                <div className="flex items-center justify-between mb-4">
+                  <div className="text-gray-400 text-sm">Cloud Deployments</div>
+                  <div className="h-2 w-8 rounded-full bg-gradient-to-r from-cyan-500 via-green-500 to-sky-500"></div>
+                </div>
+                <div className="space-y-3">
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-400 text-sm">Frontend</span>
+                    <span className="text-cyan-400 font-medium">Vercel</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-400 text-sm">Backend</span>
+                    <span className="text-cyan-400 font-medium">Vercel</span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="text-gray-400 text-sm">Database</span>
+                    <span className="text-orange-300 font-medium">Firebase</span>
+                  </div>
+
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+};
+
+export default Hero;
